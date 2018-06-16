@@ -1,6 +1,7 @@
 defmodule Blitzy.CLI do
   alias Blitzy.TasksSupervisor
   require Logger
+  # require IEx
 
   # ./blitzy -n [requests] [url]
   def main(args) do
@@ -10,14 +11,16 @@ defmodule Blitzy.CLI do
     Application.get_env(:blitzy, :slave_nodes)
     |> Enum.each(&Node.connect(&1))
 
+    # IEx.pry
+
     # Most command line tools take in arguments and parse them like the following pipe operator.
     args
     |> parse_args
-    |> process_options([node()|Node.list])
+    |> process_options([node | Node.list])
   end
 
   defp parse_args(args) do
-    OptionParser.parse(args,  aliases: [n: :requests],
+    OptionParser.parse(args, aliases: [n: :requests],
                               strict: [requests: :integer])
   end
 
@@ -26,15 +29,13 @@ defmodule Blitzy.CLI do
   # PRIVATE FUNCTIONS #
   #####################
 
-  defp process_options(options, nodes) do
-    case options do
-
-      # Match:
+  # Match:
       # 1 [requests: n] shorthand for switches --requests or -n contains a single value that is also an integer
       # 2 [url] a url
       # 3 [] no invalid arguments.  An empty list in the third element
+  defp process_options(options, nodes) do
+    case options do
       {[requests: n], [url], []} ->
-        # perform action
         do_requests(n, url, nodes)
       _ ->
         do_help()
@@ -75,7 +76,7 @@ defmodule Blitzy.CLI do
   defp parse_results(results) do
     {successes, _failures} =
       results
-        |> Enum.split_with(fn x ->
+        |> Enum.partition(fn x ->
           case x do
             {:ok, _} -> true
             _        -> false
@@ -103,11 +104,7 @@ defmodule Blitzy.CLI do
 
   defp average(list) do
     sum = Enum.sum(list)
-    if sum > 0 do
-      sum / Enum.count(list)
-    else
-      0
-    end
+    if sum > 0, do: sum / Enum.count(list), else: 0
   end
 
 end

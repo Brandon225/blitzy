@@ -4,15 +4,11 @@ defmodule Blitzy.MixProject do
   def project do
     [
       app: :blitzy,
-      version: "0.0.1",
-      elixir: "~> 1.1",
-      escript: escript(), #1
+      version: "0.1.0",
+      elixir: "~> 1.4",
+      escript: [main_module: Blitzy.CLI],
       deps: deps()
     ]
-  end
-
-  def escript do
-    [main_module: Blitzy.CLI]
   end
 
   # Run "mix help compile.app" to learn about applications.
@@ -27,8 +23,8 @@ defmodule Blitzy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.1"},
-      {:timex, "~> 3.3"},
+      {:httpoison, "~> 0.9.0"},
+      {:timex, "~> 3.0"},
       {:tzdata, "~> 0.1.8", override: true}
     ]
   end

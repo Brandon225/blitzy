@@ -14,10 +14,10 @@ defmodule Blitzy.Worker do
   #   handle_response({Duration.to_milliseconds(timestamp), response})
   # end
 
-  def start(url, func \\ &HTTPoison.get/1) do
+  def start(url) do
     # IO.puts "Running on #node-#{node}"
-    {timestamp, response} = Time.measure(fn -> HTTPoison.get(url) end)
-    handle_response({Time.to_msecs(timestamp), response})
+    {timestamp, response} = Duration.measure(fn -> HTTPoison.get(url) end)
+    handle_response({Duration.to_milliseconds(timestamp), response})
   end
 
 
